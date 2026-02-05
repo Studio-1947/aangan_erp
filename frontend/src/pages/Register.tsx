@@ -13,18 +13,35 @@ const Register: React.FC = () => {
     e.preventDefault();
     setLoading(true);
     setError(null);
+    console.log('Attempting registration for:', email);
 
     try {
-      const { error } = await supabase.auth.signUp({
+      if (!email || !password) {
+        throw new Error('Please enter both email and password');
+      }
+
+      // Check for min password length if needed, Supabase usually requires 6
+      if (password.length < 6) {
+        throw new Error('Password must be at least 6 characters');
+      }
+
+      console.log('Calling supabase.auth.signUp...');
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
       });
 
-      if (error) throw error;
+      if (error) {
+         console.error('Supabase Register Error:', error);
+         throw error;
+      }
+
+      console.log('Registration successful:', data);
       
       alert('Registration successful! Please check your email for confirmation login.');
       navigate('/login');
     } catch (err: any) {
+      console.error('Register Exception:', err);
       setError(err.message || 'An error occurred during registration');
     } finally {
       setLoading(false);

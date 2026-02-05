@@ -6,14 +6,14 @@
 
 @layer base {
   :root {
-    --color-primary: 99 102 241; /* #6366f1 */
-    --color-primary-hover: 79 70 229; /* #4f46e5 */
+    --color-primary: 16 185 129; /* #10b981 Emerald 500 */
+    --color-primary-hover: 5 150 105; /* #059669 Emerald 600 */
     
-    --bg-gradient-start: 102 126 234; /* #667eea */
-    --bg-gradient-end: 118 75 162; /* #764ba2 */
+    --bg-gradient-start: 6 78 59; /* #064e3b Emerald 900 */
+    --bg-gradient-end: 2 44 34; /* #022c22 Emerald 950 */
     
-    --accent-pink: 255 0 204; /* #ff00cc */
-    --accent-blue: 51 51 255; /* #3333ff */
+    --accent-pink: 163 230 53; /* #a3e635 Lime 400 (Replacing pink blob) */
+    --accent-blue: 52 211 153; /* #34d399 Emerald 400 (Replacing blue blob) */
   }
 
   body {
@@ -24,9 +24,9 @@
 
 @layer utilities {
   .glass-container {
-    @apply bg-white/10 backdrop-blur-md border border-white/20 shadow-xl;
+    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
   }
   .glass-input {
-    @apply w-full p-4 bg-white/5 border border-white/10 rounded-xl text-white outline-none transition-all duration-300 focus:bg-white/10 focus:border-white/40 focus:shadow-[0_0_15px_rgba(255,255,255,0.1)];
+    @apply w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white outline-none transition-all duration-300 focus:bg-black/30 focus:border-primary/50 focus:shadow-[0_0_15px_rgba(16,185,129,0.2)];
   }
 }
