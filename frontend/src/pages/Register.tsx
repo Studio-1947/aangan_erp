@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
+import { Mail, Lock, Loader2, AlertCircle, UserPlus } from 'lucide-react';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -42,7 +43,13 @@ const Register: React.FC = () => {
       navigate('/login');
     } catch (err: any) {
       console.error('Register Exception:', err);
-      setError(err.message || 'An error occurred during registration');
+      
+      // Specifically handle Rate Limit error
+      if (err.message && err.message.toLowerCase().includes('rate limit')) {
+        setError('Too many attempts. Please try again in an hour.');
+      } else {
+        setError(err.message || 'An error occurred during registration');
+      }
     } finally {
       setLoading(false);
     }
@@ -50,53 +57,66 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-accent-pink w-[300px] h-[300px] -top-[100px] -left-[100px]"></div>
-      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-accent-blue w-[400px] h-[400px] -bottom-[150px] -right-[100px]"></div>
+      <div className="absolute rounded-full blur-[100px] -z-10 opacity-50 bg-accent-pink w-[300px] h-[300px] -top-[50px] -left-[100px] animate-pulse"></div>
+      <div className="absolute rounded-full blur-[100px] -z-10 opacity-50 bg-accent-blue w-[400px] h-[400px] -bottom-[100px] -right-[100px] animate-pulse" style={{ animationDelay: '1s' }}></div>
       
-      <div className="glass-container p-12 rounded-3xl w-full max-w-md animate-fadeIn">
-        <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
-          Create Account
-        </h1>
-        <p className="text-center mb-8 opacity-80 font-light">Join Aangan ERP today</p>
-        
-        {error && (
-          <div className="text-red-400 bg-red-500/10 p-3 rounded-lg text-sm text-center border border-red-500/30 mb-4 animate-shake">
-            {error}
+      <div className="min-h-screen flex items-center justify-center p-4">
+        <div className="glass-container p-8 md:p-12 rounded-3xl w-full max-w-md animate-fadeIn transition-all duration-300 hover:shadow-[0_0_40px_rgba(16,185,129,0.1)]">
+          <div className="text-center mb-8">
+            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white to-primary-hover bg-clip-text text-transparent drop-shadow-sm">
+              Join Aangan
+            </h1>
+            <p className="text-white/60 font-light text-lg">Start managing visually</p>
           </div>
-        )}
-        
-        <form onSubmit={handleRegister} className="flex flex-col gap-5">
-          <div className="relative">
-            <input
-              type="email"
-              className="glass-input placeholder-white/50"
-              placeholder="Email Address"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          <div className="relative">
-            <input
-              type="password"
-              className="glass-input placeholder-white/50"
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="w-full p-4 bg-white text-primary rounded-xl text-lg font-semibold hover:-translate-y-0.5 hover:shadow-lg hover:bg-gray-100 transition-all duration-300 disabled:opacity-50 mt-4"
-            disabled={loading}
-          >
-            {loading ? 'Creating Account...' : 'Sign Up'}
-          </button>
-        </form>
+          
+          {error && (
+            <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl mb-6 flex items-start gap-3 animate-shake">
+              <AlertCircle size={20} className="shrink-0 mt-0.5" />
+              <span className="text-sm font-medium">{error}</span>
+            </div>
+          )}
+          
+          <form onSubmit={handleRegister} className="flex flex-col gap-5">
+            <div className="relative group">
+              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary transition-colors" size={20} />
+              <input
+                type="email"
+                className="glass-input pl-12 focus:ring-2 ring-primary/20 transition-all"
+                placeholder="Email Address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="relative group">
+              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary transition-colors" size={20} />
+              <input
+                type="password"
+                className="glass-input pl-12 focus:ring-2 ring-primary/20 transition-all"
+                placeholder="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+            </div>
+            
+            <button 
+              type="submit" 
+              className="w-full py-4 bg-primary text-white rounded-xl text-lg font-semibold hover:bg-primary-hover hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2 mt-2"
+              disabled={loading}
+            >
+              {loading ? <Loader2 className="animate-spin" size={20} /> : (
+                <>
+                  <span>Create Account</span>
+                  <UserPlus size={20} />
+                </>
+              )}
+            </button>
+          </form>
 
-        <div className="text-center mt-6 text-sm text-white/70">
-          Already have an account? <Link to="/login" className="text-white font-medium ml-1 hover:underline underline-offset-4">Sign In</Link>
+          <div className="text-center mt-8 text-sm text-white/60">
+            Already have an account? <Link to="/login" className="text-primary font-bold ml-1 hover:underline underline-offset-4 decoration-2">Sign In</Link>
+          </div>
         </div>
       </div>
     </>
