@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
 import { Link, useNavigate } from 'react-router-dom';
-import '../styles/Auth.css';
 
 const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -23,10 +22,6 @@ const Register: React.FC = () => {
 
       if (error) throw error;
       
-      // For Supabase, by default you might need to confirm email. 
-      // We'll assume for now we just want to notify them or redirect.
-      // If auto-confirm is enabled, they might be logged in.
-      // We'll redirect to login with a message (or just login if configured).
       alert('Registration successful! Please check your email for confirmation login.');
       navigate('/login');
     } catch (err: any) {
@@ -38,42 +33,53 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <div className="bg-shape shape-1"></div>
-      <div className="bg-shape shape-2"></div>
-      <div className="auth-container">
-        <h1 className="auth-title">Create Account</h1>
-        <p className="auth-subtitle">Join Aangan ERP today</p>
+      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-[#ff00cc] w-[300px] h-[300px] -top-[100px] -left-[100px]"></div>
+      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-[#3333ff] w-[400px] h-[400px] -bottom-[150px] -right-[100px]"></div>
+      
+      <div className="glass-container p-12 rounded-3xl w-full max-w-md animate-fadeIn">
+        <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
+          Create Account
+        </h1>
+        <p className="text-center mb-8 opacity-80 font-light">Join Aangan ERP today</p>
         
-        {error && <div className="error-message">{error}</div>}
+        {error && (
+          <div className="text-red-400 bg-red-500/10 p-3 rounded-lg text-sm text-center border border-red-500/30 mb-4 animate-shake">
+            {error}
+          </div>
+        )}
         
-        <form onSubmit={handleRegister} className="auth-form">
-          <div className="form-group">
+        <form onSubmit={handleRegister} className="flex flex-col gap-5">
+          <div className="relative">
             <input
               type="email"
-              className="auth-input"
+              className="glass-input placeholder-white/50"
               placeholder="Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
             />
           </div>
-          <div className="form-group">
+          <div className="relative">
             <input
               type="password"
-              className="auth-input"
+              className="glass-input placeholder-white/50"
               placeholder="Password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
           </div>
-          <button type="submit" className="auth-button" disabled={loading}>
+          <button 
+            type="submit" 
+            className="w-full p-4 bg-white text-primary rounded-xl text-lg font-semibold hover:-translate-y-0.5 hover:shadow-lg hover:bg-gray-100 transition-all duration-300 disabled:opacity-50 mt-4"
+            disabled={loading}
+          >
             {loading ? 'Creating Account...' : 'Sign Up'}
           </button>
         </form>
 
-        <div className="auth-link">
-          Already have an account? <Link to="/login">Sign In</Link>
+        <div className="text-center mt-6 text-sm text-white/70">
+          Already have an account? <Link to="/login" className="text-white font-medium ml-1 hover:underline underline-offset-4">Sign In</Link>
         </div>
       </div>
     </>
