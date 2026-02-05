@@ -33,7 +33,7 @@ const Login: React.FC = () => {
       }
       
       console.log('Login successful:', data);
-      navigate('/');
+      navigate('/dashboard');
     } catch (err: any) {
       console.error('Login Exception:', err);
       setError(err.message || 'An error occurred during login');
