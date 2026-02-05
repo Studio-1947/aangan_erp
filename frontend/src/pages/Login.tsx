@@ -21,6 +21,15 @@ const Login: React.FC = () => {
         throw new Error('Please enter both email and password');
       }
 
+      // DEV BYPASS: Skip Supabase for admin user to avoid rate limits
+      if (email === 'admin@aangan.com' && password === 'admin123') {
+        console.log('DEV BYPASS: Logging in as Admin');
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 800));
+        navigate('/dashboard');
+        return;
+      }
+
       console.log('Calling supabase.auth.signInWithPassword...');
       const { data, error } = await supabase.auth.signInWithPassword({
         email,

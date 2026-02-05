@@ -1,32 +1,46 @@
-@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap');
+@import "tailwindcss";
 
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@theme {
+  --color-primary: rgb(16 185 129);
+  --color-primary-hover: rgb(5 150 105);
+  
+  --color-accent-pink: rgb(163 230 53);
+  --color-accent-blue: rgb(52 211 153);
 
-@layer base {
-  :root {
-    --color-primary: 16 185 129; /* #10b981 Emerald 500 */
-    --color-primary-hover: 5 150 105; /* #059669 Emerald 600 */
-    
-    --bg-gradient-start: 6 78 59; /* #064e3b Emerald 900 */
-    --bg-gradient-end: 2 44 34; /* #022c22 Emerald 950 */
-    
-    --accent-pink: 163 230 53; /* #a3e635 Lime 400 (Replacing pink blob) */
-    --accent-blue: 52 211 153; /* #34d399 Emerald 400 (Replacing blue blob) */
+  --font-sans: 'Outfit', sans-serif;
+
+  --animate-fadeIn: fadeIn 0.8s ease-out;
+  --animate-shake: shake 0.5s ease-in-out;
+
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(20px); }
+    100% { opacity: 1; transform: translateY(0); }
   }
-
-  body {
-    @apply font-sans min-h-screen text-white overflow-hidden m-0;
-    background: linear-gradient(135deg, rgb(var(--bg-gradient-start)) 0%, rgb(var(--bg-gradient-end)) 100%);
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    75% { transform: translateX(5px); }
   }
 }
 
-@layer utilities {
-  .glass-container {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
-  }
-  .glass-input {
-    @apply w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white outline-none transition-all duration-300 focus:bg-black/30 focus:border-primary/50 focus:shadow-[0_0_15px_rgba(16,185,129,0.2)];
-  }
+:root {
+  --bg-gradient-start: 6 78 59;
+  --bg-gradient-end: 2 44 34;
+}
+
+body {
+  font-family: var(--font-sans);
+  min-height: 100vh;
+  color: white;
+  overflow: hidden;
+  margin: 0;
+  background: linear-gradient(135deg, rgb(var(--bg-gradient-start)) 0%, rgb(var(--bg-gradient-end)) 100%);
+}
+
+@utility glass-container {
+  @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
+}
+
+@utility glass-input {
+  @apply w-full p-4 bg-black/20 border border-white/10 rounded-xl text-white outline-none transition-all duration-300 focus:bg-black/30 focus:border-primary/50 focus:shadow-[0_0_15px_rgba(16,185,129,0.2)];
 }
