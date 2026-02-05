@@ -8,11 +8,12 @@ export default {
     extend: {
       colors: {
         primary: {
-          DEFAULT: '#6366f1',
-          hover: '#4f46e5',
+          DEFAULT: 'rgb(var(--color-primary) / <alpha-value>)',
+          hover: 'rgb(var(--color-primary-hover) / <alpha-value>)',
         },
-        brand: {
-          bg: '#1a1b2e', // Example dark bg
+        accent: {
+          pink: 'rgb(var(--accent-pink) / <alpha-value>)',
+          blue: 'rgb(var(--accent-blue) / <alpha-value>)',
         }
       },
       fontFamily: {

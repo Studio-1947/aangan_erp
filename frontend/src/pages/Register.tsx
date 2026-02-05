@@ -33,8 +33,8 @@ const Register: React.FC = () => {
 
   return (
     <>
-      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-[#ff00cc] w-[300px] h-[300px] -top-[100px] -left-[100px]"></div>
-      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-[#3333ff] w-[400px] h-[400px] -bottom-[150px] -right-[100px]"></div>
+      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-accent-pink w-[300px] h-[300px] -top-[100px] -left-[100px]"></div>
+      <div className="absolute rounded-full blur-[80px] -z-10 opacity-60 bg-accent-blue w-[400px] h-[400px] -bottom-[150px] -right-[100px]"></div>
       
       <div className="glass-container p-12 rounded-3xl w-full max-w-md animate-fadeIn">
         <h1 className="text-3xl font-bold mb-2 text-center bg-gradient-to-r from-white to-blue-200 bg-clip-text text-transparent">
