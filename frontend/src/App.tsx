@@ -3,6 +3,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
+import CreateHomestay from './pages/CreateHomestay';
+import Header from './components/Header';
 
 const Home = () => {
   return (
@@ -41,7 +43,17 @@ function App() {
           path="/dashboard" 
           element={
             <ProtectedRoute>
+              <Header />
               <Dashboard />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/onboarding" 
+          element={
+            <ProtectedRoute>
+              <Header />
+              <CreateHomestay />
             </ProtectedRoute>
           } 
         />
