@@ -1,124 +1,120 @@
 import React, { useState } from 'react';
-import { supabase } from '../supabaseClient';
-import { Link, useNavigate } from 'react-router-dom';
-import { Mail, Lock, Loader2, AlertCircle } from 'lucide-react';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
+import { Loader2 } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card';
+import { authService } from '../services/authService';
+import { sileo } from 'sileo';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+
   const navigate = useNavigate();
+  const location = useLocation();
+
+  let from = location.state?.from?.pathname || '/dashboard';
+  // Prevent redirect loop if the user was redirected from an auth page (like reset-password)
+  if (['/reset-password', '/register', '/forgot-password', '/login'].includes(from)) {
+    from = '/dashboard';
+  }
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    setError(null);
-    console.log('Attempting login for:', email);
+
+    // Basic Validation
+    if (!email || !password) {
+      sileo.error({ title: 'Please enter both email and password.' });
+      setLoading(false);
+      return;
+    }
 
     try {
-      if (!email || !password) {
-        throw new Error('Please enter both email and password');
-      }
-
-      console.log('Calling supabase.auth.signInWithPassword...');
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email,
-        password,
-      });
+      const { error } = await authService.login(email, password);
 
       if (error) {
-        console.error('Supabase Login Error:', error);
         throw error;
       }
-      
-      console.log('Login successful:', data);
-      navigate('/dashboard');
+
+      sileo.success({ title: 'Welcome back!' });
+      // Successful login
+      navigate(from, { replace: true });
     } catch (err: any) {
-      console.error('Login Exception:', err);
-      setError(err.message || 'An error occurred during login');
+      sileo.error({ title: authService.normalizeError(err) });
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <>
-      {/* Background Shapes */}
-      <div className="absolute rounded-full blur-[100px] -z-10 opacity-50 bg-accent-pink w-[300px] h-[300px] -top-[50px] -left-[100px] animate-pulse"></div>
-      <div className="absolute rounded-full blur-[100px] -z-10 opacity-50 bg-accent-blue w-[400px] h-[400px] -bottom-[100px] -right-[100px] animate-pulse" style={{ animationDelay: '1s' }}></div>
-      
-      <div className="min-h-screen flex items-center justify-center p-4">
-        <div className="glass-container p-8 md:p-12 rounded-3xl w-full max-w-md animate-fadeIn transition-all duration-300 hover:shadow-[0_0_40px_rgba(16,185,129,0.1)]">
-          <div className="text-center mb-8">
-            <h1 className="text-4xl font-bold mb-2 bg-gradient-to-r from-white to-primary-hover bg-clip-text text-transparent drop-shadow-sm">
-              Welcome Back
-            </h1>
-            <p className="text-white/60 font-light text-lg">Sign in to your Aangan ERP account</p>
-          </div>
-          
-          {error && (
-            <div className="bg-red-500/10 border border-red-500/20 text-red-200 p-4 rounded-xl mb-6 flex items-start gap-3 animate-shake">
-              <AlertCircle size={20} className="shrink-0 mt-0.5" />
-              <span className="text-sm">{error}</span>
-            </div>
-          )}
-          
-          <form onSubmit={handleLogin} className="flex flex-col gap-5">
-            <div className="relative group">
-              <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary transition-colors" size={20} />
-              <input
+    <div className="min-h-screen flex items-center justify-center p-4 bg-muted/50">
+      <Card className="w-full max-w-md">
+        <CardHeader className="space-y-1">
+          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
+          <CardDescription>
+            Enter your email to sign in to your account
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                id="email"
                 type="email"
-                className="glass-input pl-12 focus:ring-2 ring-primary/20 transition-all"
-                placeholder="Email Address"
+                placeholder="m@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
-            <div className="relative group">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 text-white/40 group-focus-within:text-primary transition-colors" size={20} />
-              <input
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label htmlFor="password">Password</Label>
+                <Link
+                  to="/forgot-password"
+                  className="text-sm font-medium text-primary hover:underline"
+                >
+                  Forgot password?
+                </Link>
+              </div>
+              <Input
+                id="password"
                 type="password"
-                className="glass-input pl-12 focus:ring-2 ring-primary/20 transition-all"
-                placeholder="Password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={loading}
               />
             </div>
-            
-            <div className="flex justify-end">
-              <a href="#" className="text-sm text-primary hover:text-primary-hover transition-colors font-medium">
-                Forgot Password?
-              </a>
-            </div>
-
-            <button 
-              type="submit" 
-              className="w-full py-4 bg-primary text-white rounded-xl text-lg font-semibold hover:bg-primary-hover hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/30 transition-all duration-300 disabled:opacity-70 disabled:hover:translate-y-0 flex items-center justify-center gap-2"
-              disabled={loading}
-            >
-              {loading ? <Loader2 className="animate-spin" size={20} /> : 'Sign In'}
-            </button>
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {loading ? 'Signing In...' : 'Sign In'}
+            </Button>
           </form>
-
-          {/* Divider */}
-          <div className="my-8 flex items-center gap-4">
-            <div className="h-px bg-white/10 flex-1"></div>
-            <span className="text-white/30 text-sm">OR</span>
-            <div className="h-px bg-white/10 flex-1"></div>
-          </div>
-
-          <div className="text-center text-sm text-white/60">
-            Don't have an account? 
-            <Link to="/register" className="text-primary font-bold ml-1 hover:underline underline-offset-4 decoration-2">
-              Create Account
+        </CardContent>
+        <CardFooter>
+          <div className="text-sm text-center text-muted-foreground w-full">
+            Don&apos;t have an account?{' '}
+            <Link to="/register" className="text-primary hover:underline underline-offset-4">
+              Sign up
             </Link>
           </div>
-        </div>
-      </div>
-    </>
+        </CardFooter>
+      </Card>
+    </div>
   );
 };
 
